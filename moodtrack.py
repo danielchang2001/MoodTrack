@@ -112,7 +112,6 @@ while offset <= 300:
                 if trackYear == '2018':
                     valence2018[trackMonth] = valence2018[trackMonth] + valence
                     counter2018[trackMonth] = counter2018[trackMonth] + 1
-                indexTrackIDList += 1
                 # 2017
                 if trackYear == '2017':
                     valence2017[trackMonth] = valence2017[trackMonth] + valence
