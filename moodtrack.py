@@ -6,22 +6,36 @@ import webbrowser
 import spotipy.util as util
 from json.decoder import JSONDecodeError
 
-dict2020 = {
+# valence20XX: summed valence value for each month
+# counter20XX: number of tracks for each month (used to calculate avg. valence for each month)
+valence2020 = {
     "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
 }
 counter2020 = {
     "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
 }
-dict2019 = {
+valence2019 = {
     "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
 }
 counter2019 = {
     "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
 }
-dict2018 = {
+valence2018 = {
     "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
 }
 counter2018 = {
+    "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
+}
+valence2017 = {
+    "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
+}
+counter2017 = {
+    "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
+}
+valence2016 = {
+    "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
+}
+counter2016 = {
     "01": 0, "02": 0, "03": 0, "04": 0, "05": 0, "06": 0, "07": 0, "08": 0, "09": 0, "10": 0, "11": 0, "12": 0
 }
 
@@ -52,13 +66,14 @@ displayName = user["display_name"]
 # Get list of all playlists
 # Maxmimum playlist number is 50 for function call, so loop after 50.
 offset = 0
-while offset <= 250:
+while offset <= 300:
     playlists = spotifyObject.current_user_playlists(50, offset)
     for playlist in playlists['items']:
         # Check if playlist is created by user.
         if playlist['owner']['display_name'] == displayName:
             # Create a list of tracks
             playlistTracks = spotifyObject.playlist_tracks(playlist['id'], fields=None, limit=100, offset=0, market=None, additional_types=('track',))
+            # Deleting every other track in each playlist to reduce runtime
             del playlistTracks['items'][1::2]
             # Creates a list of all track IDs from a playlist
             trackIDList = []
@@ -85,29 +100,58 @@ while offset <= 250:
                 trackID = track['track']['id']
                 # Get valence of each track
                 valence = audioFeatures[indexTrackIDList]['valence']
+                # If track was added to playlist in 2020:
                 if trackYear == '2020':
-                    dict2020[trackMonth] = dict2020[trackMonth] + valence
+                    valence2020[trackMonth] = valence2020[trackMonth] + valence
                     counter2020[trackMonth] = counter2020[trackMonth] + 1
+                # 2019
                 if trackYear == '2019':
-                    dict2019[trackMonth] = dict2019[trackMonth] + valence
+                    valence2019[trackMonth] = valence2019[trackMonth] + valence
                     counter2019[trackMonth] = counter2019[trackMonth] + 1
+                # 2018
                 if trackYear == '2018':
-                    dict2018[trackMonth] = dict2018[trackMonth] + valence
+                    valence2018[trackMonth] = valence2018[trackMonth] + valence
                     counter2018[trackMonth] = counter2018[trackMonth] + 1
                 indexTrackIDList += 1
+                # 2017
+                if trackYear == '2017':
+                    valence2017[trackMonth] = valence2017[trackMonth] + valence
+                    counter2017[trackMonth] = counter2017[trackMonth] + 1
+                # 2016
+                if trackYear == '2016':
+                    valence2016[trackMonth] = valence2016[trackMonth] + valence
+                    counter2016[trackMonth] = counter2016[trackMonth] + 1
+                indexTrackIDList += 1
     offset += 50
-for key in dict2020:
-    if counter2020[key] == 0:
-        continue
-    print(key, dict2020[key] / counter2020[key])
-print('--')
-for key in dict2019:
-    if counter2019[key] == 0:
-        continue
-    print(key, dict2019[key] / counter2019[key])
-print('--')
-for key in dict2018:
-    if counter2018[key] == 0:
-        continue
-    print(key, dict2018[key] / counter2018[key])
 
+# Prints valence's for each month
+print('2020')
+for key in valence2020:
+    if counter2020[key] == 0:
+        print(key, '0')
+        continue
+    print(key, valence2020[key] / counter2020[key])
+print('2019')
+for key in valence2019:
+    if counter2019[key] == 0:
+        print(key, '0')
+        continue
+    print(key, valence2019[key] / counter2019[key])
+print('2018')
+for key in valence2018:
+    if counter2018[key] == 0:
+        print(key, '0')
+        continue
+    print(key, valence2018[key] / counter2018[key])
+print('2017')
+for key in valence2017:
+    if counter2017[key] == 0:
+        print(key, '0')
+        continue
+    print(key, valence2017[key] / counter2017[key])
+print('2016')
+for key in valence2016:
+    if counter2016[key] == 0:
+        print(key, '0')
+        continue
+    print(key, valence2016[key] / counter2016[key])
