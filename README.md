@@ -1,2 +1,2 @@
-# MusicalTimestamp
-Organizes all Spotify playlists into folders based on date of playlist creation.
+# MoodTrack
+Analyzes how your mood has changed over time based on the music you've listened to.
