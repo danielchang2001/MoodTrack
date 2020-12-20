@@ -1,2 +1,2 @@
 # MoodTrack
-Organizes all Spotify playlists into folders based on date of playlist creation.
+Analyzes how your mood has changed over time based on the music you've listened to.
