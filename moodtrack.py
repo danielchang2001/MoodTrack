@@ -4,6 +4,7 @@ import json
 import spotipy
 import webbrowser
 import spotipy.util as util
+import numpy as np
 from json.decoder import JSONDecodeError
 
 # valence20XX: summed valence value for each month
@@ -66,61 +67,60 @@ displayName = user["display_name"]
 # Get list of all playlists
 # Maxmimum playlist number is 50 for function call, so loop after 50.
 offset = 0
-while offset <= 300:
+while offset <= 0:
     playlists = spotifyObject.current_user_playlists(50, offset)
     for playlist in playlists['items']:
         # Check if playlist is created by user.
         if playlist['owner']['display_name'] == displayName:
             # Create a list of tracks
-            playlistTracks = spotifyObject.playlist_tracks(playlist['id'], fields=None, limit=100, offset=0, market=None, additional_types=('track',))
-            # Deleting every other track in each playlist to reduce runtime
-            del playlistTracks['items'][1::2]
-            # Creates a list of all track IDs from a playlist
-            trackIDList = []
-            for track in playlistTracks['items']:
-                # Error check
-                if (track['track'] == None) or (track['track']['id'] == None):
-                    continue
-                trackIDList.append(track['track']['id'])
+            playlistTracks = spotifyObject.playlist_tracks(playlist['id'], fields=None, limit=25, offset=0, market=None, additional_types=('track',))
             # Loop through all tracks in a playlist
-            indexTrackIDList = 0
-            audioFeatures = spotifyObject.audio_features(trackIDList)
             for track in playlistTracks['items']:
                 # Error check
                 if (track['track'] == None) or (track['track']['id'] == None):
                     continue
-                if audioFeatures[indexTrackIDList] == None:
+                # Creates a single element list for the track ID. (func audio_features requires a list for input)
+                trackIDList = np.array([])
+                trackIDList = np.append(trackIDList, track['track']['id'])
+                # audioFeatures: list of audio features for each track in trackIDList
+                audioFeatures = spotifyObject.audio_features(trackIDList)
+                # Error check
+                if audioFeatures[0] == None:
                     continue
                 # Get year and month track was added to playlist
-                trackDate = track['added_at'].split('-')
+                trackDate = track['added_at'][:7].split('-') # Truncated date to only year and month for efficiency.
                 trackYear = trackDate[0]
                 trackMonth = trackDate[1]
                 # Increments number of tracks in respective month
                 # Get unique track ID
                 trackID = track['track']['id']
                 # Get valence of each track
-                valence = audioFeatures[indexTrackIDList]['valence']
+                valence = audioFeatures[0]['valence']
                 # If track was added to playlist in 2020:
                 if trackYear == '2020':
                     valence2020[trackMonth] = valence2020[trackMonth] + valence
                     counter2020[trackMonth] = counter2020[trackMonth] + 1
+                    continue
                 # 2019
                 if trackYear == '2019':
                     valence2019[trackMonth] = valence2019[trackMonth] + valence
                     counter2019[trackMonth] = counter2019[trackMonth] + 1
+                    continue
                 # 2018
                 if trackYear == '2018':
                     valence2018[trackMonth] = valence2018[trackMonth] + valence
                     counter2018[trackMonth] = counter2018[trackMonth] + 1
+                    continue
                 # 2017
                 if trackYear == '2017':
                     valence2017[trackMonth] = valence2017[trackMonth] + valence
                     counter2017[trackMonth] = counter2017[trackMonth] + 1
+                    continue
                 # 2016
                 if trackYear == '2016':
                     valence2016[trackMonth] = valence2016[trackMonth] + valence
                     counter2016[trackMonth] = counter2016[trackMonth] + 1
-                indexTrackIDList += 1
+                    continue
     offset += 50
 
 # Prints valence's for each month
