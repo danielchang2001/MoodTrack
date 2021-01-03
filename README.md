@@ -13,3 +13,8 @@ Requirements:
  1. Spotipy Library (pip install spotipy --upgrade)
  2. Numpy (pip install numpy)
  3. MatPlotLib (pip install matplotlib)
+
+Running the Program:
+ 1. You will need your Spotify username, which is the text after '/user/' in https://open.spotify.com/user/.
+  * This is your profile link which can be copied through the 'Share' button on your Spotify profile.
+ 2. You will need the Client Secret, which is a unique ID for the application. I currently haven't found a way to let others use the application without revealing my Client Secret ID.
