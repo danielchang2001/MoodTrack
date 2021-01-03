@@ -43,10 +43,10 @@ counter2016 = {
 }
 
 # Get Spotify username
-username = sys.argv[1]
+username = input('Type Spotify User ID: ')
 scope = 'playlist-read-private'
+client_secret = input('Type Spotify Client Secret: ')
 client_id = '81f7cb4b6676434a90522576d7f36b38'
-client_secret= '9d44d235ee514940a8d48e9988da6eab'
 redirect_uri = 'http://google.com/'
 
 # Prompt permissions to user
