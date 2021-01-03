@@ -1,4 +1,7 @@
 # MoodTrack
+
+![](outputimg.png)
+
 Description: 
 
  Using Spotipy, a Python library for the Spotify API, MoodTrack generates a graph that shows how a user's mood has changed over time based on their listening history.
